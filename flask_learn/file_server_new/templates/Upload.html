@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+    <title>上传/查看文件</title>
+    <style>
+        body {
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 500px;
+        }
+        .btn {
+            margin-bottom: 5px; /* 调整按钮的外边距 */
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h2 class="text-center">上传/查看文件</h2>
+        <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data" class="mt-4">
+            <div class="mb-3">
+                <label for="folderInput" class="form-label">选择文件夹</label>
+                <input type="file" id="folderInput" name="folder" webkitdirectory directory multiple class="form-control">
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">上传</button>
+            <button type="button" id="viewFilesBtn" class="btn btn-primary btn-block">查看文件</button>
+        </form>
+        <div id="progress" class="mt-4">
+            <div class="progress">
+                <div id="progress-bar" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+        </div>
+        <div id="responseContainer" class="mt-4">
+            <!-- Response will be displayed here -->
+        </div>
+    </div>
+    <script src="../static/js/jquery.min.js"></script>
+    <script src="../static/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // 文件上传
+            $('#uploadForm').submit(function(e) {
+                e.preventDefault();
+                var formData = new FormData(this);
+                $.ajax({
+                    xhr: function() {
+                        var xhr = new window.XMLHttpRequest();
+                        xhr.upload.addEventListener("progress", function(evt) {
+                            if (evt.lengthComputable) {
+                                var percentComplete = evt.loaded / evt.total * 100;
+                                $('#progress-bar').width(percentComplete + '%');
+                                $('#progress-bar').attr('aria-valuenow', percentComplete);
+                            }
+                        }, false);
+                        return xhr;
+                    },
+                    url: '/upload',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        $('#responseContainer').html(response);
+                    }
+                });
+            });
+
+            // 查看已上传文件
+            $('#viewFilesBtn').click(function() {
+                window.location.href = '/list_files';
+            });
+        });
+    </script>
+</body>
+</html>

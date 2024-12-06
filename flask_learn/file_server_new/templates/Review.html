@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>已上传文件列表</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .return-link {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            text-decoration: none;
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+    <a class="return-link" href="{{ url_for('index') }}">
+        <i class="fas fa-arrow-left"></i> 返回
+    </a>
+    <h2 style="text-align: center">已上传文件列表</h2>
+    <table>
+        <tr>
+            <th>原始文件名</th>
+            <th>新文件名</th>
+        </tr>
+        {% for file in files %}
+        <tr>
+            <td>{{ file[0] }}</td>
+            <td><a href="{{ url_for('download_file', filename=file[1]) }}">{{ file[1] }}</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
